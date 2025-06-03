@@ -1,6 +1,7 @@
 package com.projeto.clube_assinatura.controller;
 
 import com.projeto.clube_assinatura.model.Client;
+import com.projeto.clube_assinatura.repository.ClientRepository;
 import com.projeto.clube_assinatura.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import java.util.Optional;
 public class ClientController {
 
     public ClientService clientService;
+
+    public ClientRepository clientRepository;
 
     @Autowired
     public ClientController(ClientService clientService) {
@@ -39,9 +42,25 @@ public class ClientController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> DeleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/clients/{id}")
+    public ResponseEntity<Client> UpdateClient(@PathVariable Long id, @RequestBody Client updateClient) {
+
+        return clientRepository.findById(id)
+                .map(client -> {
+                    client.setName(updateClient.getName());
+                    client.setEmail(updateClient.getEmail());
+                    client.setCpf(updateClient.getCpf());
+                    client.setTel(updateClient.getTel());
+                    Client savedClient = clientRepository.save(client);
+                    return ResponseEntity.ok(client);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }
