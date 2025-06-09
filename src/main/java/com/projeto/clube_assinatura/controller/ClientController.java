@@ -48,19 +48,16 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/clients/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Client> UpdateClient(@PathVariable Long id, @RequestBody Client updateClient) {
 
-        return clientRepository.findById(id)
-                .map(client -> {
-                    client.setName(updateClient.getName());
-                    client.setEmail(updateClient.getEmail());
-                    client.setCpf(updateClient.getCpf());
-                    client.setTel(updateClient.getTel());
-                    Client savedClient = clientRepository.save(client);
-                    return ResponseEntity.ok(client);
-                })
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            Client update = clientService.updateClient(id, updateClient);
+            return ResponseEntity.ok(update);
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok().build();
+        }
+
     }
 
 }
