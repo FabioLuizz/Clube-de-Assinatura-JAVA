@@ -1,7 +1,9 @@
 package com.projeto.clube_assinatura.service;
 
+import com.projeto.clube_assinatura.dto.ClientDTO;
 import com.projeto.clube_assinatura.model.Client;
 import com.projeto.clube_assinatura.repository.ClientRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,12 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
-    public Client saveClient(Client client) {
+    public Client saveClient(@Valid ClientDTO clientDTO) {
+        Client client = new Client();
+        client.setName(clientDTO.getName());
+        client.setCpf(clientDTO.getCpf());
+        client.setTel(clientDTO.getTel());
+
         return clientRepository.save(client);
     }
 
@@ -34,13 +41,13 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
-    public Client updateClient(Long id, Client updateClient) {
+    public Client updateClient(Long id, @Valid ClientDTO updateClientDTO) {
         return clientRepository.findById(id)
                 .map(client -> {
-                    client.setName(updateClient.getName());
-                    client.setEmail(updateClient.getEmail());
-                    client.setCpf(updateClient.getCpf());
-                    client.setTel(updateClient.getTel());
+                    client.setName(updateClientDTO.getName());
+                    client.setEmail(updateClientDTO.getEmail());
+                    client.setCpf(updateClientDTO.getCpf());
+                    client.setTel(updateClientDTO.getTel());
                     return clientRepository.save(client);
                 })
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));

@@ -1,8 +1,10 @@
 package com.projeto.clube_assinatura.controller;
 
+import com.projeto.clube_assinatura.dto.ClientDTO;
 import com.projeto.clube_assinatura.model.Client;
 import com.projeto.clube_assinatura.repository.ClientRepository;
 import com.projeto.clube_assinatura.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +18,14 @@ public class ClientController {
 
     public ClientService clientService;
 
-    public ClientRepository clientRepository;
-
     @Autowired
     public ClientController(ClientService clientService) {
         this.clientService = clientService;
     }
 
     @PostMapping
-    public ResponseEntity<Client> CreateClient(@RequestBody Client client) {
-        Client saveClient = clientService.saveClient(client);
+    public ResponseEntity<Client> CreateClient(@Valid @RequestBody ClientDTO clientDTO) {
+        Client saveClient = clientService.saveClient(clientDTO);
         return ResponseEntity.ok(saveClient);
     }
 
@@ -49,10 +49,10 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> UpdateClient(@PathVariable Long id, @RequestBody Client updateClient) {
+    public ResponseEntity<Client> UpdateClient(@PathVariable Long id,@Valid @RequestBody ClientDTO updateClientDTO) {
 
         try {
-            Client update = clientService.updateClient(id, updateClient);
+            Client update = clientService.updateClient(id, updateClientDTO);
             return ResponseEntity.ok(update);
         } catch (RuntimeException e) {
             return ResponseEntity.ok().build();
