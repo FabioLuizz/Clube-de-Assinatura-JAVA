@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "users")
 public class User {
 
     @Id
@@ -18,12 +19,7 @@ public class User {
     private Long id;
 
     private String name;
-
-    @Column(unique = true)
     private String email;
-
     private String password;
-
     private String role;
-
 }
