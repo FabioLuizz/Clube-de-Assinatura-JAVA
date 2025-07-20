@@ -1,8 +1,10 @@
 package com.projeto.clube_assinatura.config;
 
+import com.projeto.clube_assinatura.repository.UserRepository;
 import com.projeto.clube_assinatura.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,9 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final TokenService tokenService;
+    private UserRepository userRepository;
 
-    public SecurityConfig(TokenService tokenService) {
+    public SecurityConfig(TokenService tokenService, UserRepository userRepository) {
         this.tokenService = tokenService;
+        this.userRepository = userRepository;
     }
 
     @Bean
@@ -27,10 +31,13 @@ public class SecurityConfig {
 
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new VerifyToken(tokenService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new VerifyToken(tokenService, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

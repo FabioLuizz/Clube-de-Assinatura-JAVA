@@ -2,6 +2,7 @@ package com.projeto.clube_assinatura.service;
 
 import com.projeto.clube_assinatura.dto.UserDTO;
 import com.projeto.clube_assinatura.model.User;
+import com.projeto.clube_assinatura.model.UserRole;
 import com.projeto.clube_assinatura.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-        user.setRole("USER");
+        user.setRole(UserRole.USER);
 
         return userRepository.save(user);
     }
