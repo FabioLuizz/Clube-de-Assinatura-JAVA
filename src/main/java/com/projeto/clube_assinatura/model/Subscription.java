@@ -33,4 +33,8 @@ public class Subscription {
 
     private boolean active;
 
+    private String stripeCostumerId;
+
+    private String stripeSubscriptionId;
+
 }

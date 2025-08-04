@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/sub/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/sub/**").hasRole("USER")
                         .requestMatchers(HttpMethod.DELETE, "/sub/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/payment/checkout/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
